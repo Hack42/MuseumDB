@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}MuseumDB: index{% end %}
+
+{% block header %}Index{% end %}
+
+{% block content %}
+
+<div class="col-lg-8">
+    <h4>Introduction</h4>
+    <div class="hline"></div>
+    <p>
+        Welcome to the inventory of Computermuseum Arnhem.
+    </p>
+</div>
+
+<div class="col-lg-4">
+    <h4>Last changes</h4>
+    <div class="hline"></div>
+    <ul>
+    {% for supplier in suppliers %}
+        <li>
+            <img width="25px" src="{{ supplier["supplier_logo"] }}"> 
+            <a href="/edit/supplier/{{ supplier["_id"] }}">{{ supplier["supplier_name"] }}</a>
+        </li>
+    {% end %}
+    </ul>
+    <ul>
+    {% for item in items %}
+        <li>
+            <a href="/edit/item/{{ item["_id"] }}">{{ item["item_name"] }}</a>
+        </li>
+    {% end %}
+    </ul>
+    <ul>
+    {% for contact in contacts%}
+        <li>
+            <a href="/edit/contact/{{ contact["_id"] }}">{{ contact["contact_name"] }}</a>
+        </li>
+    {% end %}
+    </ul>
+</div>
+
+{% end %}

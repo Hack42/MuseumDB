@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}MuseumDB: suppliers{% end %}
+
+{% block header %}Lists all the suppliers in the MuseumDB{% end %}
+
+{% block content %}
+    <div class="col-lg-8">
+        <h4>Existing suppliers</h4>
+        <div class="hline"></div>
+            <ul>
+                {% for supplier in suppliers %}
+                    <! -- Begin new supplier -->
+                    <div class="spacing"></div>
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <p>
+                                <img width="100px" class="img-responsive" src="{{ supplier["supplier_logo"] }}">
+                                <h3 class="ctitle">{{ supplier["supplier_name"] }}</h3>
+                            </p>
+                            <p><a href="{{ supplier["supplier_wiki"] }}">Wiki</a></p>
+                            <p><a href="/edit/supplier/{{ str(supplier["_id"]) }}">Edit</a></p>
+                            <p><a href="/remove/supplier/{{ str(supplier["_id"]) }}">Delete</a></p>
+                        </div>
+                    </div>
+                {% end %}
+            </ul>
+    </div>
+{% end %}
