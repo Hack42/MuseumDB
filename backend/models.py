@@ -18,8 +18,14 @@ from tornado.options import define, options
 
 from base import *
 
+class AddModelHandler(BaseHandler) :
+    def get(self) :
+        #item_types = list(self.db.types.find({"type_class" : 'item_type'}))
+        #for item_type in item_types :
+        #    logging.info("Types = %s" % str(item_type['type_name']))
+        self.render('add_edit_modes.html', add_model = True)
+
 class ShowModelsHandler(BaseHandler) :
     def get(self) :
-        models = self.db.models.find()
+        models = list(self.db.models.find())
         self.render('models.html', models = models)
-

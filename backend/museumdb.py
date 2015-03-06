@@ -22,6 +22,7 @@ from items import *
 from suppliers import *
 from models import *
 from museumdbtypes import *
+from models import *
 
 define("port", default=9999, help="run on the given port", type=int)
 
@@ -50,7 +51,11 @@ class MuseumDBApp(tornado.web.Application) :
                         (r"/models", ShowModelsHandler),
                         (r"/types", ShowTypesHandler),
                         (r"/add/type", AddTypeHandler),
-                        (r"/remove/type/([0-9a-z]+)", RemoveTypeHandler)
+                        (r"/remove/type/([0-9a-z]+)", RemoveTypeHandler),
+                        (r"/items", ShowItemsHandler),
+                        (r"/add/item", AddItemHandler),
+                        (r"/models", ShowModelsHandler),
+                        (r"/add/model", AddModelHandler)
         ]
 
         settings = dict(

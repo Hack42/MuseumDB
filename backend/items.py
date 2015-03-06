@@ -20,5 +20,12 @@ from base import *
 
 class AddItemHandler(BaseHandler) :
     def get(self) :
-        self.render('add.html')
+        item_types = list(self.db.types.find({"type_class" : 'item_type'}))
+        for item_type in item_types :
+            logging.info("Types = %s" % str(item_type['type_name']))
+        self.render('add_edit_item.html', item_types = item_types, add_item = True)
 
+class ShowItemsHandler(BaseHandler) :
+    def get(self) :
+        items = list(self.db.items.find())
+        self.render('items.html', items = items)

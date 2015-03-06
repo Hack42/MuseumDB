@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}MuseumDB: Items{% end %}
+
+{% block header %}Lists all the items in the MuseumDB{% end %}
+
+{% block content %}
+    <div class="col-lg-8">
+        <h4>Existing Items</h4>
+        <div class="hline"></div>
+            <ul>
+                {% for item in items %}
+                    <!-- Begin new item -->
+                    <div class="spacing"></div>
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <p>
+                                <h3 class="ctitle">{{ item["item_name"] }}</h3>
+                            </p>
+                            <p><a href="/item/{{ str(item["_id"]) }}">View</a></p>
+                            <p><a href="/edit/item/{{ str(item["_id"]) }}">Edit</a></p>
+                            <p><a href="/remove/item/{{ str(item["_id"]) }}">Delete</a></p>
+                        </div>
+                    </div>
+                {% end %}
+            </ul>
+    </div>
+{% end %}
