@@ -1,3 +1,9 @@
+"""
+items.py
+
+Module that handles everything related to museum items. Showing, Adding, Removing, etc.
+"""
+
 # Imports
 import pymongo
 import os.path

@@ -1,3 +1,9 @@
+"""
+base.py
+
+Module that is the basis for all the Tornado HTPP request handlers
+"""
+
 # Imports
 import pymongo
 import os.path

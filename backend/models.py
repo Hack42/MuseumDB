@@ -1,3 +1,9 @@
+"""
+models.py
+
+Module that handles everything related to hardware models. Showing, Adding, Removing, etc.
+"""
+
 # Imports
 import pymongo
 import os.path
@@ -23,6 +29,9 @@ class AddModelHandler(BaseHandler) :
         #item_types = list(self.db.types.find({"type_class" : 'item_type'}))
         #for item_type in item_types :
         #    logging.info("Types = %s" % str(item_type['type_name']))
+        
+        # To add a model, the form needs to know all the suppliers
+        # And all the base types
         self.render('add_edit_modes.html', add_model = True)
 
 class ShowModelsHandler(BaseHandler) :

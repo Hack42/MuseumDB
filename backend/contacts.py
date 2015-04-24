@@ -1,3 +1,9 @@
+"""
+contacts.py
+
+Module that handles everything related to contacts. Showing, Adding, Removing, etc.
+"""
+
 # Imports
 import pymongo
 import os.path

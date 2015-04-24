@@ -1,3 +1,9 @@
+"""
+models.py
+
+Module that handles everything related to suppliers. Showing, Adding, Removing, etc.
+"""
+
 # Imports
 import pymongo
 import os.path
