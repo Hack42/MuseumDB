@@ -4,6 +4,7 @@ museumdb.py
 
 Main application module. Start the application using "python museumdb.py"
 """
+
 # Imports
 import pymongo
 import os.path
