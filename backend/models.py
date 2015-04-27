@@ -31,8 +31,11 @@ class AddModelHandler(BaseHandler) :
         #    logging.info("Types = %s" % str(item_type['type_name']))
         
         # To add a model, the form needs to know all the suppliers
+        suppliers = self.db.suppliers.find()
+        
         # And all the base types
-        self.render('add_edit_modes.html', add_model = True)
+        
+        self.render('add_edit_model.html', add_model = True, suppliers = suppliers)
 
 class ShowModelsHandler(BaseHandler) :
     def get(self) :
