@@ -33,7 +33,7 @@ class AddModelHandler(BaseHandler) :
         # To add a model, the form needs to know all the suppliers
         suppliers = self.db.suppliers.find()
         
-        # And all the base types
+        # Item base types are loaded dynamically onmpage load using Ajax 
         
         self.render('add_edit_model.html', add_model = True, suppliers = suppliers)
 
