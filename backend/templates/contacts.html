@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}MuseumDB: contacts{% end %}
+
+{% block header %}Lists all the contacts in the MuseumDB{% end %}
+
+{% block content %}
+    <div class="col-lg-8">
+        <h4>Existing contacts</h4>
+        <div class="hline"></div>
+            <ul>
+                {% for contact in contacts %}
+                    <! -- Begin new contact -->
+                    <div class="spacing"></div>
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <p>
+                                <h3 class="ctitle">{{ contact["contact_name"] }}</h3>
+                            </p>
+                            <p><a href="/edit/contact/{{ str(contact["_id"]) }}">Edit</a></p>
+                            <p><a href="/remove/contact/{{ str(contact["_id"]) }}">Delete</a></p>
+                        </div>
+                    </div>
+                {% end %}
+            </ul>
+    </div>
+{% end %}

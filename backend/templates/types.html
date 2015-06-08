@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}MuseumDB: types{% end %}
+
+{% block header %}Lists all the types in the MuseumDB{% end %}
+
+{% block content %}
+    <div class="col-lg-8">
+        <h4>Types</h4>
+        <div class="hline"></div>
+        <div class="spacing"></div>
+        {% for class_type, type_data in class_results.iteritems() %}
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3 class="ctitle">{{ class_types[class_type] }}</h3>
+                    {% for type_datum in type_data %}
+                        <p>{{ type_datum["type_name"] }} <a href="/remove/type/{{ str(type_datum["_id"]) }}">Delete</a></p>
+                    {% end %}
+                </div>
+            </div>
+        {% end %}
+    </div>
+{% end %}

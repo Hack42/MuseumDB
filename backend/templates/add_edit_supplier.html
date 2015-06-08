@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% if add_supplier %}
+    {% block title %}MuseumDB: add supplier{% end %}
+
+    {% block header %}Add a new supplier to the DB{% end %}
+{% else %}
+    {% block title %}MuseumDB: edit supplier{% end %}
+
+    {% block header %}Edit an existing supplier in the DB{% end %}
+{% end %}
+
+{% block content %}
+    <div class="col-lg-8">
+        <h4>Add an item</h4>
+        <div class="hline"></div>
+        {% if add_supplier %}
+            <p>Add a supplier to the MuseumDB.</p>
+        {% else %}
+            <p>Edit an exising supplier tha's already in the MuseumDB</p>
+        {% end %}
+        <form role="form" method="POST">
+            <div class="form-group">
+                <label for="SupplierName">Name</label>
+                {% if add_supplier %}
+                    <input class="form-control" id="SupplierName" name="SupplierName" type="text">
+                {% else %}
+                    <input class="form-control" id="SupplierName" name="SupplierName" type="text" value="{{ supplier_name }}">
+                {% end %}
+            </div>
+            <div class="form-group">
+                <label for="SupplierLogo">Logo URL</label>
+                {% if add_supplier %}
+                    <input class="form-control" id="SupplierLogo" name="SupplierLogo" type="url">
+                {% else %}
+                    <input class="form-control" id="SupplierLogo" name="SupplierLogo" type="url" value="{{ supplier_logo }}">
+                {% end %}
+            </div>
+            <div class="form-group">
+                <label for="SupplierWiki">Wiki URL</label>
+                {% if add_supplier %}
+                   <input class="form-control" id="SupplierWiki" name="SupplierWiki" type="url">
+                {% else %}
+                    <input class="form-control" id="SupplierWiki" name="SupplierWiki" type="url" value="{{ supplier_wiki }}">
+                {% end %}
+            </div>
+            <button type="submit" class="btn btn-theme">Submit</button>
+            {% if add_supplier %}
+            {% else %}
+                <input name="SupplierID" type="hidden" value="{{ supplier_id }}">
+            {% end %}
+        </form>
+    </div>
+
+    <div class="col-lg-4">
+        <h4>Existing suppliers</h4>
+        <div class="hline"></div>
+            <ul>
+                {% for supplier in suppliers %}
+                    <li><img width="25px" src="{{ supplier["supplier_logo"] }}"></img> <a href="{{ supplier["supplier_wiki"] }}">{{ supplier["supplier_name"] }}</a></li>
+                {% end %}
+            </ul>
+    </div>
+{% end %}

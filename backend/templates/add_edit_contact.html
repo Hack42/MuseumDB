@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% if add_contact %}
+    {% block title %}MuseumDB: add contact{% end %}
+
+    {% block header %}Add a new contact to the DB{% end %}
+{% else %}
+    {% block title %}MuseumDB: edit contact{% end %}
+
+    {% block header %}Edit an existing contact in the DB{% end %}
+{% end %}
+
+{% block content %}
+    <div class="col-lg-8">
+        {% if add_contact %}
+            <h4>Add a contact</h4>
+        {% else %}
+            <h4>Edit a contact</h4>
+        {% end %}
+        <div class="hline"></div>
+        {% if add_contact %}
+            <p>Add a contact to the MuseumDB.</p>
+        {% else %}
+            <p>Edit an exising contact who's already in the MuseumDB</p>
+        {% end %}
+        <form role="form" method="POST">
+            <div class="form-group">
+                <label for="ContactName">Name</label>
+                {% if add_contact %}
+                    <input class="form-control" id="ContactName" name="ContactName" type="text">
+                {% else %}
+                    <input class="form-control" id="ContactName" name="ContactName" type="text" value="{{ contact_name }}">
+                {% end %}
+            </div>
+            <div class="form-group">
+                <label for="ContactAddress">Address</label>
+                {% if add_contact %}
+                    <input class="form-control" id="ContactAddress" name="ContactAddress" type="text">
+                {% else %}
+                    <input class="form-control" id="ContactAddress" name="ContactAddress" type="text" value="{{ contact_address }}">
+                {% end %}
+            </div>
+            <div class="form-group">
+                <label for="ContactCity">City</label>
+                {% if add_contact %}
+                    <input class="form-control" id="ContactCity" name="ContactCity" type="text">
+                {% else %}
+                    <input class="form-control" id="ContactCity" name="ContactCity" type="text" value="{{ contact_city }}">
+                {% end %}
+            </div>
+            <div class="form-group">
+                <label for="ContactCountry">Country</label>
+                {% if add_contact %}
+                    <input class="form-control" id="ContactCountry" name="ContactCountry" type="text">
+                {% else %}
+                    <input class="form-control" id="ContactCountry" name="ContactCountry" type="text" value="{{ contact_country }}">
+                {% end %}
+            </div>
+            <div class="form-group">
+                <label for="ContactTelNumber">Telephone Number</label>
+                {% if add_contact %}
+                    <input class="form-control" id="ContactTelNumber" name="ContactTelNumber" type="text">
+                {% else %}
+                    <input class="form-control" id="ContactTelNumber" name="ContactTelNumber" type="text" value="{{ contact_telnumber }}">
+                {% end %}
+            </div>
+            <div class="form-group">
+                <label for="ContactEmail">Email</label>
+                {% if add_contact %}
+                    <input class="form-control" id="ContactEmail" name="ContactEmail" type="text">
+                {% else %}
+                    <input class="form-control" id="ContactEmail" name="ContactEmail" type="email" value="{{ contact_email }}">
+                {% end %}
+            </div>
+            <div class="form-group">
+                <label for="ContactURL">Website</label>
+                {% if add_contact %}
+                    <input class="form-control" id="ContactURL" name="ContactURL" type="text">
+                {% else %}
+                    <input class="form-control" id="ContactURL" name="ContactURL" type="text" value="{{ contact_url }}">
+                {% end %}
+            </div>
+            <div class="form-group">
+                <label for="ContactComment">Comment</label>
+                {% if add_contact %}
+                    <input class="form-control" id="ContactComment" name="ContactComment" type="text">
+                {% else %}
+                    <input class="form-control" id="ContactComment" name="ContactComment" type="text" value="{{ contact_comment }}">
+                {% end %}
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="ContactShow"
+                    {% if add_contact %}
+                    {% else %}
+                        {% if contact_show %}
+                            checked="checked"
+                        {% end %}
+                    {% end %}
+                    > Show
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="ContactParticipant"
+                    {% if add_contact %}
+                    {% else %}
+                        {% if contact_participant %}
+                            checked="checked"
+                        {% end %}
+                    {% end %}
+                    > Participant
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="ContactOwner"
+                    {% if add_contact %}
+                    {% else %}
+                        {% if contact_owner %}
+                            checked="checked"
+                        {% end %}
+                    {% end %}
+                    > Owner
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="ContactDonor"
+                    {% if add_contact %}
+                    {% else %}
+                        {% if contact_donor %}
+                            checked="checked"
+                        {% end %}
+                    {% end %}
+                    > Donor
+                </label>
+            </div>
+            <button type="submit" class="btn btn-theme">Submit</button>
+            {% if add_contact %}
+            {% else %}
+                <input name="ContactID" type="hidden" value="{{ contact_id }}">
+            {% end %}
+        </form>
+    </div>
+
+{% end %}

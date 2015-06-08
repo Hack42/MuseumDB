@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% if add_type %}
+    {% block title %}MuseumDB: add type{% end %}
+
+    {% block header %}Add a new type to the DB{% end %}
+{% else %}
+    {% block title %}MuseumDB: edit type{% end %}
+
+    {% block header %}Edit an existing type in the DB{% end %}
+{% end %}
+
+{% block content %}
+    <div class="col-lg-8">
+        <h4>Add a type</h4>
+        <div class="hline"></div>
+        {% if add_type %}
+            <p>Add a type to the MuseumDB.</p>
+        {% else %}
+            <p>Edit an existing type that's already in the MuseumDB</p>
+        {% end %}
+        <form role="form" method="POST">
+            <div class="form-group">
+                <label for="TypeName">Name</label>
+                {% if add_type %}
+                    <input class="form-control" id="TypeName" name="TypeName" type="text">
+                {% else %}
+                    <input class="form-control" id="TypeName" name="TypeName" type="text" value="{{ type_name }}">
+                {% end %}
+            </div>
+            <div class="form-group">
+                <label for="TypeClass">Class</label>
+                <select id="TypeClass" name="TypeClass">
+                    {% for type_class, type_class_name in class_types.iteritems() %}
+                        <option value="{{ type_class }}" 
+                        {% if add_type %}
+                        {% else %}
+                            {% if False %}
+                                selected
+                            {% end %}
+                        {% end %}
+                        >{{ type_class_name }}
+                    {% end %}
+                </select>
+            </div>
+
+
+            <button type="submit" class="btn btn-theme">Submit</button>
+            {% if add_type %}
+            {% else %}
+                <input name="TypeID" type="hidden" value="{{ type_id }}">
+            {% end %}
+        </form>
+    </div>
+
+{% end %}
