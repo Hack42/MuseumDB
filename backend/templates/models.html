@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}MuseumDB: Models{% end %}
+
+{% block header %}Lists all the models in the MuseumDB{% end %}
+
+{% block content %}
+    <div class="col-lg-8">
+        <h4>Existing Models</h4>
+        <div class="hline"></div>
+            <ul>
+                {% for model in models %}
+                    <!-- Begin new model -->
+                    <div class="spacing"></div>
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <p>
+                                <h3 class="ctitle">{{ model["model_name"] }}</h3>
+                            </p>
+                            <p><a href="/model/{{ str(model["_id"]) }}">View</a></p>
+                            <p><a href="/edit/model/{{ str(model["_id"]) }}">Edit</a></p>
+                            <p><a href="/remove/model/{{ str(model["_id"]) }}">Delete</a></p>
+                        </div>
+                    </div>
+                {% end %}
+            </ul>
+    </div>
+{% end %}

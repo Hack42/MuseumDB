@@ -97,7 +97,7 @@
             <div class="form-group">
                 <label for="TypeClass" class="col-sm-3 control-label">Model type class</label>
                 <div class="col-sm-8">
-                    <select id="TypeClass" name="TypeCLass">
+                    <select id="TypeClass" name="TypeClass">
                          <!-- Filled using an AJAX request -->
                     </select>
                 </div>
@@ -106,7 +106,7 @@
             <div class="form-group">
                 <label for="SubTypeClass" class="col-sm-3 control-label">Model sub type class</label>
                 <div class="col-sm-8">
-                     <select id="SubTypeClass" name="SubTypeCLass">
+                     <select id="SubTypeClass" name="SubTypeClass">
                          <option value="None">None</option>
                          <!-- Filled further using an AJAX request -->
                      </select>
@@ -132,7 +132,7 @@
             </div>
 
             <div class="form-group">
-                <label for="ContactName" class="col-sm-3 control-label">Name</label>
+                <label for="ModelName" class="col-sm-3 control-label">Name</label>
                 <div class="col-sm-8">
                      {% if add_model %}
                          <input class="form-control" id="ModelName" name="ModelName" type="text">
@@ -141,6 +141,11 @@
                      {% end %}
                 </div>
             </div>
+            {% if add_model %}
+            {% else %}
+                <input name="ModelID" type="hidden" value="{{ model_id }}">
+            {% end %}
+            <button type="submit" class="btn btn-theme">Submit</button>
         </form>
     </div>
 

@@ -33,9 +33,35 @@ class AddModelHandler(BaseHandler) :
         # To add a model, the form needs to know all the suppliers
         suppliers = self.db.suppliers.find()
         
-        # Item base types are loaded dynamically onmpage load using Ajax 
+        # Item base and subtypes are loaded dynamically on page load using Ajax 
         
         self.render('add_edit_model.html', add_model = True, suppliers = suppliers)
+
+    def post(self) :
+        model_id = self.get_argument("ModelID", None, True)
+        if model_id :
+            model = self.db.models.find_one({'_id': ObjectId(model_id)})
+        else :
+            model = dict()
+
+        model["type_class"] = self.get_argument("TypeClass");
+        model["sub_type_class"] = self.get_argument("SubTypeClass");
+        model["supplier_id"] = self.get_argument("SupplierID");
+        model["model_name"] = self.get_argument("ModelName");
+
+        model["updated_at"] = datetime.datetime.now()
+
+        if model_id :
+            self.db.models.save(model)
+        else :
+            self.db.models.insert(model)
+
+        # From needs a list of the available suppliers
+        suppliers = self.db.suppliers.find()
+
+        self.render('add_edit_model.html', add_model = False, suppliers = suppliers, model = model)
+       
+
 
 class ShowModelsHandler(BaseHandler) :
     def get(self) :
