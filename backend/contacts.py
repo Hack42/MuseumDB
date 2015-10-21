@@ -88,7 +88,7 @@ class EditContactHandler(BaseHandler) :
         contact["contact_owner"] = self.get_argument("ContactOwner", False)
         contact["contact_donor"] = self.get_argument("ContactDonor", False)
 
-        supplier["updated_at"] = datetime.datetime.now()
+        contact["updated_at"] = datetime.datetime.now()
 
         self.db.contacts.save(contact)
 
