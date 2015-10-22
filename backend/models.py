@@ -61,6 +61,26 @@ class AddModelHandler(BaseHandler) :
 
         self.render('add_edit_model.html', add_model = False, suppliers = suppliers, model = model)
        
+class EditModelHandler(BaseHandler) :
+    def get(self, model_id) :
+        model = self.db.models.find_one({'_id': ObjectId(model_id)})
+        suppliers = self.db.suppliers.find()
+
+        self.render('add_edit_model.html', add_model = False, suppliers = suppliers, model = model)
+
+    def post(self, post_model_id) :
+        model_id = self.get_argument("ModelID", None, True)
+        model["type_class"] = self.get_argument("TypeClass");
+        model["sub_type_class"] = self.get_argument("SubTypeClass");
+        model["supplier_id"] = self.get_argument("SupplierID");
+        model["model_name"] = self.get_argument("ModelName");
+
+        model["updated_at"] = datetime.datetime.now()
+
+        self.db.models.save(model)
+
+        suppliers = self.db.suppliers.find()
+        self.render('add_edit_model.html', add_model = False, suppliers = suppliers, model = model)
 
 
 class ShowModelsHandler(BaseHandler) :

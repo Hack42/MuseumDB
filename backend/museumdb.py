@@ -64,7 +64,8 @@ class MuseumDBApp(tornado.web.Application) :
                         (r"/items", ShowItemsHandler),
                         (r"/add/item", AddItemHandler),
                         (r"/models", ShowModelsHandler),
-                        (r"/add/model", AddModelHandler)
+                        (r"/add/model", AddModelHandler),
+                        (r"/edit/model/([0-9a-z]+)", EditModelHandler),
         ]
 
         settings = dict(
