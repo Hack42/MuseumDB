@@ -108,10 +108,12 @@ class ShowModelsBySupplierHandler(BaseHandler) :
         # Only return data if request tastes like AJAX
         if self.request.headers.get('X-Requested-With') == "XMLHttpRequest" :
             # Get all the models for this supplier and reduce them to something that is usable as JSON
-            models = self.db.models.find({'supplier_id': ObjectId(supplier_id)}).sort('model_name', pymongo.ASCENDING)
+            print "Looking for models with supplier id %s" % (supplier_id)
+            models = self.db.models.find({'supplier_id': supplier_id}).sort('model_name', pymongo.ASCENDING)
             my_models = dict();
 
             for model in models:
+                print "Found model %s" % (str(model))
                 model_id = str(model['_id'])
                 my_models[model_id] = model["model_name"]
 
