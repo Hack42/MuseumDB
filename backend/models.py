@@ -49,6 +49,7 @@ class AddModelHandler(BaseHandler) :
         model["supplier_id"] = self.get_argument("SupplierID");
         model["model_name"] = self.get_argument("ModelName");
 
+        model["created_at"] = datetime.datetime.now()
         model["updated_at"] = datetime.datetime.now()
 
         if model_id :
@@ -57,9 +58,11 @@ class AddModelHandler(BaseHandler) :
             self.db.models.insert(model)
 
         # From needs a list of the available suppliers
-        suppliers = self.db.suppliers.find()
+        #suppliers = self.db.suppliers.find()
+        #self.render('add_edit_model.html', add_model = False, suppliers = suppliers, model = model)
 
-        self.render('add_edit_model.html', add_model = False, suppliers = suppliers, model = model)
+        self.redirect("/models")
+
        
 class EditModelHandler(BaseHandler) :
     def get(self, model_id) :
@@ -80,8 +83,10 @@ class EditModelHandler(BaseHandler) :
 
         self.db.models.save(model)
 
-        suppliers = self.db.suppliers.find()
-        self.render('add_edit_model.html', add_model = False, suppliers = suppliers, model = model)
+        #suppliers = self.db.suppliers.find()
+        #self.render('add_edit_model.html', add_model = False, suppliers = suppliers, model = model)
+
+        self.redirect("/models")
 
 
 class ShowModelsHandler(BaseHandler) :
