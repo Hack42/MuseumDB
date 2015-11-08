@@ -84,7 +84,12 @@ class ShowSuppliersHandler(BaseHandler) :
 
         # Check if request is AJAX, if so return JSON, else return a nicely formatted page
         if self.request.headers.get('X-Requested-With') == "XMLHttpRequest" :
-            self.write(json_util.dumps(suppliers))
+            # need tor ecudoce the MongoDB search resuls back to something usable for JSON
+            my_suppliers = dict()
+            for supplier in suppliers :
+                supplier_id = str(supplier['_id'])
+                my_suppliers[supplier_id] = supplier["supplier_name"]
+            self.write(json_util.dumps(my_suppliers))
         else:
             self.render('suppliers.html', suppliers = suppliers)
 
