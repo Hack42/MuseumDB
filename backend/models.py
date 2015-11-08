@@ -9,6 +9,7 @@ import pymongo
 import os.path
 import logging
 from bson.objectid import ObjectId
+from bson import json_util
 import datetime
 
 # Tornado imports
@@ -100,4 +101,22 @@ class ShowModelHandler(BaseHandler) :
         model = self.db.models.find_one({'_id': ObjectId(model_id)})
         suppliers = self.db.suppliers.find()
 
-        #what now?
+        #what's next?
+
+class ShowModelsBySupplierHandler(BaseHandler) :
+    def get(self, supplier_id) :
+        # Only return data if request tastes like AJAX
+        if self.request.headers.get('X-Requested-With') == "XMLHttpRequest" :
+            # Get all the models for this supplier and reduce them to something that is usable as JSON
+            models = self.db.models.find({'supplier_id': ObjectId(supplier_id)}).sort('model_name', pymongo.ASCENDING)
+            my_models = dict();
+
+            for model in models:
+                model_id = str(model['_id'])
+                my_models[model_id] = model["model_name"]
+
+            self.write(json_util.dumps(my_models))
+        else :
+            self.redirect("/models")
+
+

@@ -47,7 +47,7 @@ class MuseumDBApp(tornado.web.Application) :
         handlers =  [   (r"/", IndexHandler),
                         (r'/favicon.ico', tornado.web.StaticFileHandler, {'path': './static/assets/ico/favicon.ico'}),
                         (r'/assets/(.*)', tornado.web.StaticFileHandler, {'path': './static/assets/'}),
-                        (r"/add", AddItemHandler),
+                        (r"/add/item", AddItemHandler),
                         (r"/suppliers", ShowSuppliersHandler),
                         (r"/add/supplier", AddSupplierHandler),
                         (r"/edit/supplier/([0-9a-z]+)", EditSupplierHandler),
@@ -66,6 +66,8 @@ class MuseumDBApp(tornado.web.Application) :
                         (r"/models", ShowModelsHandler),
                         (r"/add/model", AddModelHandler),
                         (r"/edit/model/([0-9a-z]+)", EditModelHandler),
+                        (r"/model/([0-9a-z]+)", ShowModelHandler),
+                        (r"/models/supplier/([0-9a-z]+)", ShowModelsBySupplierHandler),
         ]
 
         settings = dict(
