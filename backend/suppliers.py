@@ -1,5 +1,5 @@
 """
-models.py
+suppliers.py
 
 Module that handles everything related to suppliers. Showing, Adding, Removing, etc.
 """
@@ -9,6 +9,7 @@ import pymongo
 import os.path
 import logging
 from bson.objectid import ObjectId
+from bson import json_util
 import datetime
 
 # Tornado imports
@@ -79,6 +80,11 @@ class RemoveSupplierHandler(BaseHandler) :
 
 class ShowSuppliersHandler(BaseHandler) :
     def get(self) :
-        suppliers = self.db.suppliers.find()
-        self.render('suppliers.html', suppliers = suppliers)
+        suppliers = self.db.suppliers.find().sort('supplier_name', pymongo.ASCENDING)
+
+        # Check if request is AJAX, if so return JSON, else return a nicely formatted page
+        if self.request.headers.get('X-Requested-With') == "XMLHttpRequest" :
+            self.write(json_util.dumps(suppliers))
+        else:
+            self.render('suppliers.html', suppliers = suppliers)
 
