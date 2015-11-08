@@ -11,28 +11,34 @@
 {% end %}
 
 {% block jquery %}
-   <!-- <script type="text/javascript">
-        $(document).ready(function() {
-            $("body").on("change", "#SupplierID", function(selected) {
-                var selected_type = $(':selected',this).attr('value');
-                alert("The selected value is: " + selected_type);
-            });
-        }); 
-   </script> -->
-   
-   <script type="text/javascript">
-        $(document).ready(function() {
-            // First fill the type class dropdown with the type classes using AJAX
+    <script type="text/javascript">
+        function fillSubTypeClassDropdown(selected_type) {
+            //So the dropdown has been changed, first clear the existing values and add a default 
+            $("#SubTypeClass")
+                .find('option')
+                .remove()
+                .end()
+                .append($('<option>').text("None"))
+            ;
+               
+            // And then fill it with the subclass types of the typeclass
             $.ajax({
                 type: 'GET',
-                url: "/type_classes",
+                url: "/type/" + selected_type,
                 success: function(data) {
                     console.log(data);
-                    //data.map(function () {
-                    //    return $('<option>').val(this.value).text(this.label);
-                    //}).appendTo('#TypeClass');
                     $.each(data, function(index, value) {
-                        $('<option>').val(index).text(value).appendTo('#TypeClass');
+                        console.log(index + " -> " + value["type_name"] + " : " + value["_id"]["$oid"]);
+{% if add_model %}
+                        $('<option>').val(value["_id"]["$oid"]).text(value["type_name"]).appendTo('#SubTypeClass');
+{% else %}
+                        if (value["_id"]["$oid"] == "{{ model['sub_type_class'] }}") {
+                            $('<option>').val(value["_id"]["$oid"]).text(value["type_name"]).prop('selected', true).appendTo('#SubTypeClass');
+                        }
+                        else {
+                            $('<option>').val(value["_id"]["$oid"]).text(value["type_name"]).appendTo('#SubTypeClass');
+                        }
+{% end %}
                     });
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -40,41 +46,42 @@
                 },
                 dataType: "json"
             });
-            
-            // When all initialisation has been done, add the event handlers below
-            
-            //When a model typeclass has been chosen, load the subtype in the SubTypeClass dropdown (if available) 
-            $("body").on("change", "#TypeClass", function(selected) {
-               var selected_type = $(':selected',this).attr('value');
-               //alert("The selected value is: " + selected_type);
+        };
 
-               //So the dropdown has been changed, first clear the existing values and add a default 
-               $("#SubTypeClass")
-                    .find('option')
-                    .remove()
-                    .end()
-                    .append($('<option>').text("None"))
-               ;
-               
-               // And then fill it with the subclass types of the typeclass
-               $.ajax({
-                   type: 'GET',
-                   url: "/type/" + selected_type,
-                   success: function(data) {
-                       console.log(data);
-                       //data.map(function () {
-                       //    return $('<option>').val(this.value).text(this.label);
-                       //}).appendTo('#TypeClass');
-                       $.each(data, function(index, value) {
-                         $('<option>').val(index).text(value["type_name"]).appendTo('#SubTypeClass');
-                       });
-                   },
-                   error: function(XMLHttpRequest, textStatus, errorThrown) {
-                       alert(textStatus);
-                   },
-                   dataType: "json"
-               });
+        $(document).ready(function() {
+            // code that should be run at startup
+            // Fill the type class dropdown with the type classes using AJAX
+            $.ajax({
+                type: 'GET',
+                url: "/type_classes",
+                success: function(data) {
+                    $.each(data, function(index, value) {
+{% if add_model %}
+                        $('<option>').val(index).text(value).appendTo('#TypeClass');
+{% else %}
+                        if (index == "{{ model['type_class'] }}") {
+                            $('<option>').val(index).text(value).prop('selected', true).appendTo('#TypeClass');
+                            //Now it's safe to also pre-fill the #SubTypeCLass dropdown
+                            fillSubTypeClassDropdown(index);
+                        }
+                        else {
+                            $('<option>').val(index).text(value).appendTo('#TypeClass');
+                        }
+{% end %}
+                    });
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(textStatus);
+                },
+                dataType: "json"
             });
+
+            // Setup the event handlers
+            $("body").on("change", "#TypeClass", function(selected) {
+                var selected_type = $(':selected',this).attr('value');
+                fillSubTypeClassDropdown(selected_type);
+            });
+
         });
    </script>
    
@@ -116,17 +123,18 @@
             <div class="form-group">
                 <label for="SupplierID" class="col-sm-3 control-label">Model supplier</label>
                 <div class="col-sm-8">
-                     <select id="SupplierID" name="SupplierID">
-                         {% for supplier in suppliers %}
-                             <option value="{{ str(supplier['_id']) }}"
-                             {% if add_model %}
-                             {% else %}
-                                 {% if False %}
-                                     selected
-                                 {% end %}
-                             {% end %}
-                             >{{ str(supplier['supplier_name']) }}
-                         {% end %}
+                    <select id="SupplierID" name="SupplierID">
+                        {% for supplier in suppliers %}
+                            {% if add_model %}
+                                <option value="{{ str(supplier['_id']) }}">{{ str(supplier['supplier_name']) }}
+                            {% else %}
+                                {% if model['supplier_id'] == str(supplier['_id']) %}
+                                    <option value="{{ str(supplier['_id']) }}" selected>{{ str(supplier['supplier_name']) }}
+                                {% else %}
+                                    <option value="{{ str(supplier['_id']) }}">{{ str(supplier['supplier_name']) }}
+                                {% end %}
+                            {% end %}
+                        {% end %}
                      </select>
                 </div>
             </div>

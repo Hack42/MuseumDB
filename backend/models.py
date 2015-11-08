@@ -70,6 +70,7 @@ class EditModelHandler(BaseHandler) :
 
     def post(self, post_model_id) :
         model_id = self.get_argument("ModelID", None, True)
+        model = self.db.models.find_one({'_id': ObjectId(model_id)})
         model["type_class"] = self.get_argument("TypeClass");
         model["sub_type_class"] = self.get_argument("SubTypeClass");
         model["supplier_id"] = self.get_argument("SupplierID");
