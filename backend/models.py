@@ -33,9 +33,12 @@ class AddModelHandler(BaseHandler) :
         # To add a model, the form needs to know all the suppliers
         suppliers = self.db.suppliers.find()
         
+        # Find all participant contacts, they can only be knowledge holders for a model
+        contacts = self.db.contacts.find({'contact_participant' : "on"})
+
         # Item base and subtypes are loaded dynamically on page load using Ajax 
         
-        self.render('add_edit_model.html', add_model = True, suppliers = suppliers)
+        self.render('add_edit_model.html', add_model = True, suppliers = suppliers, contacts = contacts)
 
     def post(self) :
         model_id = self.get_argument("ModelID", None, True)
@@ -57,10 +60,6 @@ class AddModelHandler(BaseHandler) :
         else :
             self.db.models.insert(model)
 
-        # From needs a list of the available suppliers
-        #suppliers = self.db.suppliers.find()
-        #self.render('add_edit_model.html', add_model = False, suppliers = suppliers, model = model)
-
         self.redirect("/models")
 
        
@@ -69,7 +68,10 @@ class EditModelHandler(BaseHandler) :
         model = self.db.models.find_one({'_id': ObjectId(model_id)})
         suppliers = self.db.suppliers.find()
 
-        self.render('add_edit_model.html', add_model = False, suppliers = suppliers, model = model)
+        # Find all participant contacts, they can only be knowledge holders for a model
+        contacts = self.db.contacts.find({'contact_participant' : "on"})
+
+        self.render('add_edit_model.html', add_model = False, suppliers = suppliers, model = model, contacts = contacts)
 
     def post(self, post_model_id) :
         model_id = self.get_argument("ModelID", None, True)
@@ -78,13 +80,12 @@ class EditModelHandler(BaseHandler) :
         model["sub_type_class"] = self.get_argument("SubTypeClass");
         model["supplier_id"] = self.get_argument("SupplierID");
         model["model_name"] = self.get_argument("ModelName");
+        model["knowledge_contact_id"] = self.get_argument("KnowledgeContactID");
+        model["model_supplier_id"] = self.get_argument("ModelSupplierID");
 
         model["updated_at"] = datetime.datetime.now()
 
         self.db.models.save(model)
-
-        #suppliers = self.db.suppliers.find()
-        #self.render('add_edit_model.html', add_model = False, suppliers = suppliers, model = model)
 
         self.redirect("/models")
 
@@ -93,3 +94,10 @@ class ShowModelsHandler(BaseHandler) :
     def get(self) :
         models = list(self.db.models.find())
         self.render('models.html', models = models)
+
+class ShowModelHandler(BaseHandler) :
+    def get(self, model_id) :
+        model = self.db.models.find_one({'_id': ObjectId(model_id)})
+        suppliers = self.db.suppliers.find()
+
+        #what now?
