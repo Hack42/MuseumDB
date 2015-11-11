@@ -53,7 +53,6 @@ class AddModelHandler(BaseHandler) :
         model["supplier_id"] = self.get_argument("SupplierID");
         model["model_name"] = self.get_argument("ModelName");
 
-        model["created_at"] = datetime.datetime.now()
         model["updated_at"] = datetime.datetime.now()
 
         if model_id :
@@ -108,14 +107,19 @@ class ShowModelsBySupplierHandler(BaseHandler) :
         # Only return data if request tastes like AJAX
         if self.request.headers.get('X-Requested-With') == "XMLHttpRequest" :
             # Get all the models for this supplier and reduce them to something that is usable as JSON
-            models = self.db.models.find({'supplier_id': supplier_id}).sort('model_name', pymongo.ASCENDING)
+            models = self.db.models.find({'supplier_id': supplier_id}).sort([("model_name", pymongo.DESCENDING)])
             my_models = dict();
 
             for model in models:
                 model_id = str(model['_id'])
-                my_models[model_id] = model["model_name"]
+                model_name = model["model_name"]
+                my_models[model_name] = model_id
 
-            self.write(json_util.dumps(my_models))
+            # People say that JSON and Python dictionaries are unsorted. OK, but how do I make a nicely sorted dropdown from
+            # unseorted JSON results? Couldn't find any useful examples. The "hack" below works but is frowne dupon? What are
+            # those devs smoking?
+            # http://stackoverflow.com/questions/10844064/items-in-json-object-are-out-of-order-using-json-dumps
+            self.write(json_util.dumps(my_models, sort_keys=True))
         else :
             self.redirect("/models")
 
