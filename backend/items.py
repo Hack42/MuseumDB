@@ -26,10 +26,9 @@ from base import *
 
 class AddItemHandler(BaseHandler) :
     def get(self) :
-        item_types = list(self.db.types.find({"type_class" : 'item_type'}))
-        for item_type in item_types :
-            logging.info("Types = %s" % str(item_type['type_name']))
-        self.render('add_edit_item.html', item_types = item_types, add_item = True)
+        owner_contacts = self.db.contacts.find({'contact_owner' : "on"}).sort('contact_name', pymongo.ASCENDING)
+        donor_contacts = self.db.contacts.find({'contact_donor' : "on"}).sort('contact_name', pymongo.ASCENDING)
+        self.render('add_edit_item.html', add_item = True, owner_contacts = list(owner_contacts), donor_contacts = list(donor_contacts))
 
 class ShowItemsHandler(BaseHandler) :
     def get(self) :

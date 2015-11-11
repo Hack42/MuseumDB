@@ -10,6 +10,99 @@
     {% block header %}Edit an existing item in the DB{% end %}
 {% end %}
 
+{% block jquery %}
+    <link href="/assets/css/bootstrap-datepicker3.css" rel="stylesheet">
+    <script src="/assets/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript">
+
+        function fillModelsDropdown(selected_supplier_id) {
+            // First clear all existing items in de dropdown
+            $("#ItemModel")
+                .find('option')
+                .remove()
+                .end()
+                .append($('<option>').text("None"));
+
+            // Fill it based on the supplier supplier
+            $.ajax({
+                type: 'GET',
+                url: "/models/supplier/" + selected_supplier_id,
+                success: function(data) {
+                    console.log(data);
+                    $.each(data, function(index, value) {
+{% if add_item %}
+                        $('<option>').val(value).text(index).appendTo('#ItemModel');
+{% else %}
+                        if (value == "{{ model['_id']["$oid"] }}") {
+                            $('<option>').val(value).text(index).prop('selected', true).appendTo('#ItemModel');
+                        }
+                        else {
+                            $('<option>').val(value.text(index).appendTo('#ItemModel');
+                        }
+{% end %}
+                    });
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(textStatus);
+                },
+                dataType: "json"
+            });
+        };
+
+        function fillSuppliersDropdown() {
+            // Use an AJAX request to download a JSON array of suppliers and use it to fille the ModelSuppliers dropdown
+            $.ajax({
+                type: 'GET',
+                url: "/suppliers",
+                success: function(data) {
+                    $("#ModelSupplier")
+                        .find('option')
+                        .remove()
+                        .end()
+                        .append($('<option>').text("None"));
+                    $.each(data, function(index, value) {
+{% if add_item %}
+                        $('<option>').val(index).text(value).appendTo('#ModelSupplier');
+{% else %}
+                        if (index == "{{ item['model_supplier'] }}") {
+                            $('<option>').val(index).text(value).prop('selected', true).appendTo('#ModelSupplier');
+                            // Call to also fill the dependent dropdown using the index as the selected suplier ID
+                            fillModelsDropdown(index);
+                        }
+                        else {
+                            $('<option>').val(index).text(value).appendTo('#ModelSupplier');
+                        }
+{% end %}
+                    });
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(textStatus);
+                },
+                dataType: "json"
+            });
+            
+        };
+
+        $(document).ready(function() {
+            // At startup, fill the suppliers dropdown with all the suppliers
+            fillSuppliersDropdown();
+
+            // Setup the event handlers for this page
+            $("body").on("change", "#ModelSupplier", function(selected) {
+                var selected_supplier_id = $(':selected',this).attr('value');
+                fillModelsDropdown(selected_supplier_id);
+            });
+
+            $('#InCollectionDate').datepicker({
+                autoclose: true,
+                clearBtn: true,
+                format: "dd-mm-yyyy",
+                todayHighlight: true,
+            });
+        });
+    </script>
+{% end %}
+
 {% block content %}
     <div class="col-lg-8">
         {% if add_item %}
@@ -23,139 +116,89 @@
         {% else %}
             <p>Edit an exising item that's already in the MuseumDB</p>
         {% end %}
-        <form role="form" method="POST">
+        <form role="form" method="POST" class="form-horizontal">
             <div class="form-group">
-                <label for="ItemMainType">Class</label>
-                <select id="ItemMainType" name="ItemMainType">
-                    {% for item_type in item_types %}
-                        <option value="{{ str(item_type['_id']) }}"
-                        {% if add_item %}
-                        {% else %}
-                            {% if False %}
-                                selected
+                <label for="ModelSupplier" class="col-sm-3 control-label">Supplier</label>
+                <div class="col-sm-8">
+                    <select id="ModelSupplier" name="ModelSupplier" class="col-sm-6">
+                         <!-- Filled using an AJAX request -->
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ItemModel" class="col-sm-3 control-label">Model</label>
+                <div class="col-sm-8">
+                    <select id="ItemModel" name="ItemModel" class="col-sm-6">
+                        <option>None</option>
+                         <!-- Filled using an AJAX request -->
+                    </select>
+                </div>
+            </div>
+
+             <div class="form-group">
+                <label for="OwnerContactID" class="col-sm-3 control-label">Owner</label>
+                <div class="col-sm-8">
+                    <select id="OwnerContactID" name="OwnerContactID" class="col-sm-6">
+                        {% for contact in owner_contacts %}
+                            {% if add_item %}
+                                <option value="{{ str(contact['_id']) }}">{{ str(contact['contact_name']) }}
+                            {% else %}
+                                {% try%}
+                                    {% if item['owner_contact_id'] == str(contact['_id']) %}
+                                        <option value="{{ str(contact['_id']) }}" selected>{{ str(contact['contact_name']) }}
+                                    {% else %}
+                                        <option value="{{ str(contact['_id']) }}">{{ str(contact['contact_name']) }}
+                                    {% end %}
+                                {% except %}
+                                    <option value="{{ str(contact['_id']) }}">{{ str(contact['contact_name']) }}
+                                {% end %}
                             {% end %}
                         {% end %}
-                        >{{ str(item_type['type_name']) }}
-                    {% end %}
-                </select>
+                     </select>
+                </div>
             </div>
+
+
             <div class="form-group">
-                <label for="ContactName">Name</label>
-                {% if add_item %}
-                    <input class="form-control" id="ContactName" name="ContactName" type="text">
-                {% else %}
-                    <input class="form-control" id="ContactName" name="ContactName" type="text" value="{{ contact_name }}">
-                {% end %}
-            </div>
-            <div class="form-group">
-                <label for="ContactAddress">Address</label>
-                {% if add_item %}
-                    <input class="form-control" id="ContactAddress" name="ContactAddress" type="text">
-                {% else %}
-                    <input class="form-control" id="ContactAddress" name="ContactAddress" type="text" value="{{ contact_address }}">
-                {% end %}
-            </div>
-            <div class="form-group">
-                <label for="ContactCity">City</label>
-                {% if add_item %}
-                    <input class="form-control" id="ContactCity" name="ContactCity" type="text">
-                {% else %}
-                    <input class="form-control" id="ContactCity" name="ContactCity" type="text" value="{{ contact_city }}">
-                {% end %}
-            </div>
-            <div class="form-group">
-                <label for="ContactCountry">Country</label>
-                {% if add_item %}
-                    <input class="form-control" id="ContactCountry" name="ContactCountry" type="text">
-                {% else %}
-                    <input class="form-control" id="ContactCountry" name="ContactCountry" type="text" value="{{ contact_country }}">
-                {% end %}
-            </div>
-            <div class="form-group">
-                <label for="ContactTelNumber">Telephone Number</label>
-                {% if add_item %}
-                    <input class="form-control" id="ContactTelNumber" name="ContactTelNumber" type="text">
-                {% else %}
-                    <input class="form-control" id="ContactTelNumber" name="ContactTelNumber" type="text" value="{{ contact_telnumber }}">
-                {% end %}
-            </div>
-            <div class="form-group">
-                <label for="ContactEmail">Email</label>
-                {% if add_item %}
-                    <input class="form-control" id="ContactEmail" name="ContactEmail" type="text">
-                {% else %}
-                    <input class="form-control" id="ContactEmail" name="ContactEmail" type="email" value="{{ contact_email }}">
-                {% end %}
-            </div>
-            <div class="form-group">
-                <label for="ContactURL">Website</label>
-                {% if add_item %}
-                    <input class="form-control" id="ContactURL" name="ContactURL" type="text">
-                {% else %}
-                    <input class="form-control" id="ContactURL" name="ContactURL" type="text" value="{{ contact_url }}">
-                {% end %}
-            </div>
-            <div class="form-group">
-                <label for="ContactComment">Comment</label>
-                {% if add_item %}
-                    <input class="form-control" id="ContactComment" name="ContactComment" type="text">
-                {% else %}
-                    <input class="form-control" id="ContactComment" name="ContactComment" type="text" value="{{ contact_comment }}">
-                {% end %}
-            </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" name="ContactShow"
-                    {% if add_item %}
-                    {% else %}
-                        {% if contact_show %}
-                            checked="checked"
+                <label for="DonorContactId" class="col-sm-3 control-label">Donor</label>
+                <div class="col-sm-8">
+                    <select id="DonorContactId" name="DonorContactId" class="col-sm-6">
+                        <option value="None">None</option>
+                        {% for contact in donor_contacts %}
+                            {% if add_item %}
+                                <option value="{{ str(contact['_id']) }}">{{ str(contact['contact_name']) }}
+                            {% else %}
+                                {% try%}
+                                    {% if item['donor_contact_id'] == str(contact['_id']) %}
+                                        <option value="{{ str(contact['_id']) }}" selected>{{ str(contact['contact_name']) }}
+                                    {% else %}
+                                        <option value="{{ str(contact['_id']) }}">{{ str(contact['contact_name']) }}
+                                    {% end %}
+                                {% except %}
+                                    <option value="{{ str(contact['_id']) }}">{{ str(contact['contact_name']) }}
+                                {% end %}
+                            {% end %}
                         {% end %}
-                    {% end %}
-                    > Show
-                </label>
+                     </select>
+                </div>
             </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" name="ContactParticipant"
-                    {% if add_item %}
-                    {% else %}
-                        {% if contact_participant %}
-                            checked="checked"
-                        {% end %}
-                    {% end %}
-                    > Participant
-                </label>
+
+            <div class="form-group">
+                <label for="InCollectionDate" class="col-sm-3 control-label">In collection</label>
+                <div class="col-sm-8">
+                    <div class="input-group date col-sm-6">
+                        <input data-provide="datepicker-inline" name="InCollectionDate" id="InCollectionDate" type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                    </div>
+                </div>
             </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" name="ContactOwner"
-                    {% if add_item %}
-                    {% else %}
-                        {% if contact_owner %}
-                            checked="checked"
-                        {% end %}
-                    {% end %}
-                    > Owner
-                </label>
-            </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" name="ContactDonor"
-                    {% if add_item %}
-                    {% else %}
-                        {% if contact_donor %}
-                            checked="checked"
-                        {% end %}
-                    {% end %}
-                    > Donor
-                </label>
-            </div>
-            <button type="submit" class="btn btn-theme">Submit</button>
+
+
             {% if add_item %}
             {% else %}
-                <input name="ContactID" type="hidden" value="{{ contact_id }}">
+                <input name="ItemID" type="hidden" value="{{ item["_id"] }}">
             {% end %}
+ 
+            <button type="submit" class="btn btn-theme">Submit</button>
         </form>
     </div>
 
