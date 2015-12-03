@@ -15,11 +15,10 @@
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <p>
-                                <h3 class="ctitle">{{ item["item_name"] }}</h3>
+                                <h3 class="ctitle">{{ item["supplier"]["supplier_name"] }} {{ item["model"]["model_name"] }}</h3>
                             </p>
-                            <p><a href="/item/{{ str(item["_id"]) }}">View</a></p>
-                            <p><a href="/edit/item/{{ str(item["_id"]) }}">Edit</a></p>
-                            <p><a href="/remove/item/{{ str(item["_id"]) }}">Delete</a></p>
+                            <p>Serial: {{ item["serial_number"] }}
+                            <p><a href="/item/{{ str(item["_id"]) }}">View</a> <a href="/edit/item/{{ str(item["_id"]) }}">Edit</a> <a href="/remove/item/{{ str(item["_id"]) }}">Delete</a></p>
                         </div>
                     </div>
                 {% end %}
